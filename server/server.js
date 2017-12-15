@@ -1,21 +1,35 @@
-const  path = require('path');
+const path = require('path');
+const http = require('http');
 const express = require('express');
+const socketIO = require('socket.io');
 
-const publicPath = path.join(__dirname, '../public')
+const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 var app = express();
+var server = http.createServer(app);
+var io = socketIO(server);
 
+app.use(express.static(publicPath));
 
-//To setup the middleware
-app.use(express.static(publicPath))
+//Register for new built in event
+io.on('connection', (socket) => {
+    console.log('New user connected');
 
-app.listen(port, (err, res) => {
-    if (err){
-        return err
-    }else {
-        console.log(`Started up at port ${port}`);
-    }
+    socket.on('disconnect', () => {
+        console.log('User was disconnected');
+    });
 
+    socket.emit('newMessage',{
+        from: 'sanjay@example.com',
+        text: 'Hey. what is going on.',
+        createAt: 123
+    });
+
+    socket.on('createMessage', (msg) => {
+        console.log('create Msg',msg);
+    });
 });
 
-module.exports = {app};
+server.listen(port, () => {
+    console.log(`Server is up on ${port}`);
+});
