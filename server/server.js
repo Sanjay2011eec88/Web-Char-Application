@@ -28,10 +28,11 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newMessage',generateMessage('Admin','New user joined'));
 
 
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         console.log('create Msg',message);
         //Emits a event to every single connection including sender
         io.emit('newMessage',generateMessage(message.from,message.text));
+        callback('This is from server');
     });
 
     //Emits to all connection except the sender
