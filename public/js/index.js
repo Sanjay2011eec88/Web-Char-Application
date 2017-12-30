@@ -52,6 +52,7 @@ jQuery('#message-form').on('submit',function (e) {
 var locationButton = jQuery('#send-location');
 locationButton.on('click',function () {
    if(!navigator.geolocation){
+       console.log("Herrererer");
        return alert('Geolocation not supported by your browser.');
    }
 
